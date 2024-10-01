@@ -5,7 +5,7 @@ import 'package:shopapp/providers/auth.dart';
 import '../screens/product_detail_screen.dart';
 import '../providers/product.dart';
 import '../providers/cart.dart';
-import '../providers/auth.dart';
+
 
 class ProductItem extends StatelessWidget {
   // final String id;
