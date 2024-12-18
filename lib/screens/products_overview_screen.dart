@@ -47,10 +47,10 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('MyShop'),
+        title: const Text('MyShop'),
         actions: <Widget>[
           PopupMenuButton(
-            onSelected: (FilterOptions selectedValue) {
+            onSelected: (FilterOptions selectedValue) { 
               setState(() {
                 if (selectedValue == FilterOptions.Favorites) {
                   _showOnlyFavorites = true;
@@ -59,27 +59,27 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
                 }
               });
             },
-            icon: Icon(
+            icon: const Icon(
               Icons.more_vert,
             ),
             itemBuilder: (_) => [
-              PopupMenuItem(
-                child: Text('Only Favorites'),
+              const PopupMenuItem(
                 value: FilterOptions.Favorites,
+                child: Text('Only Favorites'),
               ),
-              PopupMenuItem(
-                child: Text('Show All'),
+              const PopupMenuItem(
                 value: FilterOptions.All,
+                child: Text('Show All'),
               ),
             ],
           ),
-          Consumer<Cart>(
+          Consumer<Cart>(                                                     //listening to fetch number of products in cart
             builder: (_, cart, ch) => Baadge(
-              child: ch!,
               value: cart.itemCount.toString(),
+              child: ch!,
             ),
             child: IconButton(
-              icon: Icon(
+              icon: const Icon(
                 Icons.shopping_cart,
               ),
               onPressed: () {
@@ -91,7 +91,7 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
       ),
       drawer: AppDrawer(),
       body: isloading
-          ? Center(
+          ? const Center(
               child: CircularProgressIndicator(),
             )
           : ProductsGrid(_showOnlyFavorites),

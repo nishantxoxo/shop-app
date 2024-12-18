@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-class CartItem {
+class CartItem {              //model for a item in a cart
   final String id;
   final String title;
   final int quantity;
@@ -14,7 +14,7 @@ class CartItem {
   });
 }
 
-class Cart with ChangeNotifier {
+class Cart with ChangeNotifier {                //actual cart with changenotifier
   Map<String, CartItem> _items = {};
 
   Map<String, CartItem> get items {
@@ -38,7 +38,7 @@ class Cart with ChangeNotifier {
     double price,
     String title,
   ) {
-    if (_items.containsKey(productId)) {
+    if (_items.containsKey(productId)) {                              //if that product already exists in the cart
       // change quantity...
       _items.update(
         productId,
@@ -49,7 +49,7 @@ class Cart with ChangeNotifier {
               quantity: existingCartItem.quantity + 1,
             ),
       );
-    } else {
+    } else {                                                             //if that doesnt already exist, so create a new one
       _items.putIfAbsent(
         productId,
         () => CartItem(
@@ -69,7 +69,7 @@ class Cart with ChangeNotifier {
   }
 
   void removeSingleItem(String productId) {
-    if (!_items.containsKey(productId)) {
+    if (!_items.containsKey(productId)) {                       
       return;
     }
     if (_items[productId]!.quantity > 1) {

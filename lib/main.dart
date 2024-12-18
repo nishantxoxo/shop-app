@@ -20,9 +20,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+
         ChangeNotifierProvider.value(
           value: Auth(),
         ),
+
         ChangeNotifierProxyProvider<Auth, Products>(
           update: (ctx, auth, previous) => Products(auth.token!,
               previous == null ? [] : previous.items, auth.userID!),
@@ -30,12 +32,11 @@ class MyApp extends StatelessWidget {
             return Products('', [], '');
           },
         ),
+
         ChangeNotifierProvider.value(
           value: Cart(),
         ),
-        // ChangeNotifierProvider.value(
-        //   value: Orders(),
-        // ),
+        
         ChangeNotifierProxyProvider<Auth, Orders>(
           update: (ctx, auth, previous) => Orders(auth.token!,
               previous == null ? [] : previous.orders, auth.userID!),
@@ -53,6 +54,8 @@ class MyApp extends StatelessWidget {
               fontFamily: 'Lato',
             ),
             home: auth.isAuth ? ProductsOverviewScreen() : AuthScreen(),
+            // ignore: avoid_print
+          
             routes: {
               ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
               CartScreen.routeName: (ctx) => CartScreen(),

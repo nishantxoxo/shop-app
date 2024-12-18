@@ -15,6 +15,7 @@ class Auth with ChangeNotifier {
 
 
   bool get isAuth{
+    print(token);
     return token != null;
   }
 
@@ -31,15 +32,14 @@ class Auth with ChangeNotifier {
   }
 
   Future<void> signup(String email, String password) async {
-    const url =
-        signUp;
+    const url = signUp;
    final response = await http.post(
       Uri.parse(url),
       body: json.encode(
         {'email': email, 'password': password, 'returnSecureToken': true},
       ),
     );
-    //print(json.decode(response.body));
+    print(json.decode(response.body).toString());
     final responseData = json.decode(response.body);
     if(responseData['error'] != null){
       throw HttpException(responseData['error']['message']);
@@ -59,10 +59,14 @@ class Auth with ChangeNotifier {
         {'email': email, 'password': password, 'returnSecureToken': true},
       ),
     );
+    print( "RESPONSE:"+ response.toString());
+
     final responseData = json.decode(response.body);
+    print( "RESPONSE DATA:"+ responseData.toString());
     if(responseData['error'] != null){
       throw HttpException(responseData['error']['message']);
     }
+    print("TOKEN : " + responseData['idToken'].toString());
     _token = responseData['idToken'];
     _userId = responseData['localId'];
     _expirydate = DateTime.now().add(Duration(seconds: int.parse(responseData['expiresIn']),),);
