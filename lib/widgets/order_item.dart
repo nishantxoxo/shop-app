@@ -20,7 +20,7 @@ class _OrderItemState extends State<OrderItem> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.all(10),
+      margin: const EdgeInsets.all(10),
       child:Column(
           children: <Widget>[
             ListTile(
@@ -38,11 +38,11 @@ class _OrderItemState extends State<OrderItem> {
               ),
             ),
             
-              AnimatedContainer(
-                duration: Duration(milliseconds: 300),
+              AnimatedContainer(                         //will show only if _expanded is true
+                duration: const Duration(milliseconds: 300),
                 curve: Curves.easeIn,
-                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 4),
-                height: _expanded ? min(widget.order.products.length * 20.0 + 10, 100) : 0,
+                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 4),
+                height: _expanded ? min(widget.order.products.length * 20.0 + 10, 100) : 0,     //if expanded is false, height will be 0 and it wont show          
                 child: ListView(
                   children: widget.order.products
                       .map(
@@ -51,14 +51,14 @@ class _OrderItemState extends State<OrderItem> {
                               children: <Widget>[
                                 Text(
                                   prod.title,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 Text(
                                   '${prod.quantity}x \$${prod.price}',
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 18,
                                     color: Colors.grey,
                                   ),

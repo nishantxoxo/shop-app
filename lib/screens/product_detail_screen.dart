@@ -13,23 +13,19 @@ class ProductDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final productId =
-        ModalRoute.of(context)?.settings.arguments as String;    // is the id
+        ModalRoute.of(context)?.settings.arguments as String; // is the id
     final loadedProduct = Provider.of<Products>(
       context,
-      listen: false,                                              //wont rebuild if data changes, only fetching data
-
-    ).findById(productId);                                 // fetching the product with that id
+      listen: false, //wont rebuild if data changes, only fetching data
+    ).findById(productId); // fetching the product with that id
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text(loadedProduct.title),
-      // ),
       body: CustomScrollView(
         slivers: <Widget>[
           SliverAppBar(
             expandedHeight: 300,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
-              title: Text(loadedProduct.title),
+              title: Text(loadedProduct.title, style: TextStyle(fontWeight: FontWeight.bold),),
               background: Hero(
                 tag: loadedProduct.id,
                 child: Image.network(
@@ -41,19 +37,26 @@ class ProductDetailScreen extends StatelessWidget {
           ),
           SliverList(
               delegate: SliverChildListDelegate([
-            SizedBox(height: 10),
-            Text(
+            const SizedBox(height: 10),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              width: double.infinity,
+              child: Text(
               '\$${loadedProduct.price}',
-              style: TextStyle(
+              style: const TextStyle(
+              
                 color: Colors.grey,
                 fontSize: 20,
+                fontWeight: FontWeight.bold
               ),
+              textAlign: TextAlign.center,
             ),
-            SizedBox(
+            ),
+            const SizedBox(
               height: 10,
             ),
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 10),
               width: double.infinity,
               child: Text(
                 loadedProduct.description,

@@ -47,6 +47,7 @@ class MyApp extends StatelessWidget {
       ],
       child: Consumer<Auth>(
         builder: (context, auth, _) => MaterialApp(
+            debugShowCheckedModeBanner: false,
             title: 'MyShop',
             theme: ThemeData(
               primarySwatch: Colors.purple,

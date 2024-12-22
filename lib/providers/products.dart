@@ -28,12 +28,12 @@ class Products with ChangeNotifier {                 //using changenotifier mixi
 
 
   Future<void> fetchAndSet([bool filter = false]) async {
-    print( "AUTHTOEKN from fetch and set: "+ authToken);
+   
     var filterstring = filter? 'orderBy="creator"&equalTo="$userID"' : '';
-    print("FILTER STRING: " + filterstring.toString());
+   
     var url = 'https://flut-4bebd-default-rtdb.firebaseio.com/product.json?auth=$authToken&$filterstring';
     // var url = 'https://flut-4bebd-default-rtdb.firebaseio.com/product.json?auth=$authToken';
-    print(url.toString());
+  
     try {
       final response = await http.get(Uri.parse(url));
       final extracted = json.decode(response.body) as Map<String, dynamic>;
@@ -108,7 +108,7 @@ class Products with ChangeNotifier {                 //using changenotifier mixi
   Future<void> updateProduct(String id, Product newProduct) async {
     final prodIndex = _items.indexWhere((prod) => prod.id == id);
     if (prodIndex >= 0) {
-      var url = 'https://flut-4bebd-default-rtdb.firebaseio.com/$id.json?auth=$authToken';
+      var url = 'https://flut-4bebd-default-rtdb.firebaseio.com/product/$id.json?auth=$authToken';
       await http.patch(Uri.parse(url), body: json.encode({
             'title': newProduct.title,
             'description': newProduct.description,
@@ -125,7 +125,7 @@ class Products with ChangeNotifier {                 //using changenotifier mixi
 
   void deleteProduct(String id) {
     _items.removeWhere((prod) => prod.id == id);
-     var url = 'https://flut-4bebd-default-rtdb.firebaseio.com/$id.json?auth=$authToken';
+     var url = 'https://flut-4bebd-default-rtdb.firebaseio.com/product/$id.json?auth=$authToken';
     http.delete(Uri.parse(url));
     
     notifyListeners();
