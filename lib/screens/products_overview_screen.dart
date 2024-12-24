@@ -25,13 +25,13 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
   @override
   void initState() {
     Future.delayed(Duration.zero).then(
-      (_) {
+      (_)  async{
         setState(
           () {
             isloading = true;
           },
         );
-        Provider.of<Products>(context, listen: false).fetchAndSet();
+        await Provider.of<Products>(context, listen: false).fetchAndSet();
         setState(
           () {
             isloading = false;

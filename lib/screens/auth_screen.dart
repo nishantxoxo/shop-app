@@ -202,6 +202,14 @@ class _AuthCardState extends State<AuthCard>
     }
   }
 
+
+
+
+
+
+
+
+
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;

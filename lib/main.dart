@@ -26,8 +26,13 @@ class MyApp extends StatelessWidget {
         ),
 
         ChangeNotifierProxyProvider<Auth, Products>(
-          update: (ctx, auth, previous) => Products(auth.token!,
-              previous == null ? [] : previous.items, auth.userID!),
+          update: (ctx, auth, previous) {
+            
+            if (auth.token == null || auth.userID == null) {
+      return Products('', [], ''); // Fallback instance with default values
+    }
+           return Products(auth.token!,
+              previous == null ? [] : previous.items, auth.userID!);},
           create: (BuildContext context) {
             return Products('', [], '');
           },
@@ -38,8 +43,12 @@ class MyApp extends StatelessWidget {
         ),
         
         ChangeNotifierProxyProvider<Auth, Orders>(
-          update: (ctx, auth, previous) => Orders(auth.token!,
-              previous == null ? [] : previous.orders, auth.userID!),
+          update: (ctx, auth, previous) { 
+            if (auth.token == null || auth.userID == null) {
+      return Orders('', [], ''); // Fallback instance with default values
+    }
+            return Orders(auth.token!,
+              previous == null ? [] : previous.orders, auth.userID!);},
           create: (BuildContext context) {
             return Orders('', [], '');
           },

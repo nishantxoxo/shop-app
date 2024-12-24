@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shopapp/urls.dart';
 import 'dart:async';
 
@@ -9,8 +10,8 @@ import '../models/http_exception.dart';
 
 class Auth with ChangeNotifier {
    String? _token;
-   DateTime? _expirydate;
-   String? _userId;
+   DateTime? _expirydate;                     //expiry date of the token recieved from firebase
+   String? _userId; 
    Timer? authtimer;
 
 
@@ -31,47 +32,55 @@ class Auth with ChangeNotifier {
     return _userId;
   }
 
-  Future<void> signup(String email, String password) async {
-    const url = signUp;
-   final response = await http.post(
+
+
+
+  Future<void> authenticate(String email, String password, String url) async {
+
+    try {
+      final response = await http.post(
       Uri.parse(url),
       body: json.encode(
         {'email': email, 'password': password, 'returnSecureToken': true},
       ),
     );
-    // print(json.decode(response.body).toString());
+ 
     final responseData = json.decode(response.body);
     if(responseData['error'] != null){
       throw HttpException(responseData['error']['message']);
     }
     _token = responseData['idToken'];
     _userId = responseData['localId'];
-    _expirydate = DateTime.now().add(Duration(seconds: int.parse(responseData['expiresIn']),),);
+    _expirydate = DateTime.now().add(Duration(seconds: int.parse(responseData['expiresIn']) ));
+    autoLogout();
     notifyListeners();
+
+  // to store the data on the device using shared prefss
+
+    final SharedPreferences prefs = await SharedPreferences.getInstance(); // Obtain shared preferences.
+    
+
+    } catch (e) {
+      throw e;
+    }
+
+    
+  }
+
+
+  // user signup fucntion  
+
+  Future<void> signup(String email, String password) async {
+
+    return authenticate(email, password, signUp);
+  
   }
 
   Future<void> login(String email, String password) async {
-    const url = signin;
+   
     try{
-    final response = await http.post(
-      Uri.parse(url),
-      body: json.encode(
-        {'email': email, 'password': password, 'returnSecureToken': true},
-      ),
-    );
-    // print( "RESPONSE:"+ response.toString());
-
-    final responseData = json.decode(response.body);
-    // print( "RESPONSE DATA:"+ responseData.toString());
-    if(responseData['error'] != null){
-      throw HttpException(responseData['error']['message']);
-    }
-    // print("TOKEN : " + responseData['idToken'].toString());
-    _token = responseData['idToken'];
-    _userId = responseData['localId'];
-    _expirydate = DateTime.now().add(Duration(seconds: int.parse(responseData['expiresIn']),),);
-    autoLogout();
-    notifyListeners();
+      return authenticate(email, password, signin);
+   
     }
     catch (error){
       throw error;
@@ -91,12 +100,16 @@ class Auth with ChangeNotifier {
     notifyListeners();
   }
 
+
+  // to automatically logout after the token expires
+
+
   void autoLogout(){
     if (authtimer != null){
       authtimer!.cancel();
     }
-    var timeToExpiry =_expirydate!.difference(DateTime.now()).inSeconds;
-    Timer(Duration(seconds: timeToExpiry), logout);
+    final timeToExpiry =_expirydate!.difference(DateTime.now()).inSeconds;
+    authtimer = Timer(Duration(seconds: timeToExpiry), logout);
 
     
   }
