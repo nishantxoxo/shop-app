@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopapp/providers/auth.dart';
+import 'package:shopapp/screens/splash_screen.dart';
 
 import './screens/cart_screen.dart';
 import './screens/products_overview_screen.dart';
@@ -20,35 +21,34 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-
         ChangeNotifierProvider.value(
           value: Auth(),
         ),
-
         ChangeNotifierProxyProvider<Auth, Products>(
           update: (ctx, auth, previous) {
-            
             if (auth.token == null || auth.userID == null) {
-      return Products('', [], ''); // Fallback instance with default values
-    }
-           return Products(auth.token!,
-              previous == null ? [] : previous.items, auth.userID!);},
+              return Products(
+                  '', [], ''); // Fallback instance with default values
+            }
+            return Products(auth.token!, previous == null ? [] : previous.items,
+                auth.userID!);
+          },
           create: (BuildContext context) {
             return Products('', [], '');
           },
         ),
-
         ChangeNotifierProvider.value(
           value: Cart(),
         ),
-        
         ChangeNotifierProxyProvider<Auth, Orders>(
-          update: (ctx, auth, previous) { 
+          update: (ctx, auth, previous) {
             if (auth.token == null || auth.userID == null) {
-      return Orders('', [], ''); // Fallback instance with default values
-    }
-            return Orders(auth.token!,
-              previous == null ? [] : previous.orders, auth.userID!);},
+              return Orders(
+                  '', [], ''); // Fallback instance with default values
+            }
+            return Orders(auth.token!, previous == null ? [] : previous.orders,
+                auth.userID!);
+          },
           create: (BuildContext context) {
             return Orders('', [], '');
           },
@@ -63,9 +63,16 @@ class MyApp extends StatelessWidget {
               secondaryHeaderColor: Colors.deepOrange,
               fontFamily: 'Lato',
             ),
-            home: auth.isAuth ? ProductsOverviewScreen() : AuthScreen(),
+            home: auth.isAuth
+                ? ProductsOverviewScreen()
+                : FutureBuilder(
+                    future: auth.tryAutoLogin(),
+                    builder: (context, snapshot) =>
+                        snapshot.connectionState == ConnectionState.waiting
+                            ? SplashScreen()
+                            : AuthScreen()),
             // ignore: avoid_print
-          
+
             routes: {
               ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
               CartScreen.routeName: (ctx) => CartScreen(),

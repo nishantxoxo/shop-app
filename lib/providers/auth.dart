@@ -33,6 +33,24 @@ class Auth with ChangeNotifier {
   }
 
 
+  Future<bool> tryAutoLogin() async{
+    final prefs = await SharedPreferences.getInstance();
+    if(!prefs.containsKey('userData')){
+      return false;
+    }
+    final extractedUserData = json.decode(prefs.getString('userData')!) as Map<String, Object>;
+    final expirydate = DateTime.parse(extractedUserData['expirydate'].toString());
+    if (expirydate.isBefore(DateTime.now())){
+      return false;
+    }
+    _token = extractedUserData['token'].toString();
+    _userId = extractedUserData['userId'].toString();
+    _expirydate = expirydate;
+    notifyListeners();
+    autoLogout();
+    return true;
+  }
+
 
 
   Future<void> authenticate(String email, String password, String url) async {
@@ -58,7 +76,13 @@ class Auth with ChangeNotifier {
   // to store the data on the device using shared prefss
 
     final SharedPreferences prefs = await SharedPreferences.getInstance(); // Obtain shared preferences.
-    
+    final userData  = json.encode({
+      'token' : _token,
+      'userId' : _userId,
+      'expirydate' : _expirydate!.toIso8601String()   
+    });
+
+    prefs.setString('userData', userData);
 
     } catch (e) {
       throw e;
@@ -87,7 +111,7 @@ class Auth with ChangeNotifier {
     }
   }
 
-  void logout(){
+  void logout() async{
     _token = null;
     _userId = null;
     _expirydate = null;
@@ -96,8 +120,12 @@ class Auth with ChangeNotifier {
       authtimer!.cancel();
       authtimer = null;
     }
+
     SnackBar(content: Text('logged out'), duration: Duration(seconds: 3),);
     notifyListeners();
+
+    final prefs = await SharedPreferences.getInstance();
+    prefs.clear();
   }
 
 
